@@ -1,7 +1,7 @@
 import { link } from "fs";
 import mongoose from "mongoose";
 
-export interface IUserProfile extends Document{
+export interface IProfile extends Document{
     userId:mongoose.Types.ObjectId;
     bio:string;
     interstes?:string[];
@@ -34,6 +34,8 @@ export interface IUserProfile extends Document{
         github?:string;
     };
     country:string;
+    preferredLanguage:string;
+    timezone:string;
     location:Location;
     notificationSettings:{
         emailNotifications:boolean;
@@ -44,7 +46,7 @@ export interface IUserProfile extends Document{
 
 
 
-const UserProfileSchema = new mongoose.Schema<IUserProfile>({
+const ProfileSchema = new mongoose.Schema<IProfile>({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
@@ -58,6 +60,66 @@ const UserProfileSchema = new mongoose.Schema<IUserProfile>({
     interstes:{
         type:[String],
         default:[]
+    },
+    picture:{
+        type:String,
+        default:''
+    },
+    website:{
+        type:String,
+        default:''
+    },
+    phoneNumber:{
+        type:String,
+        default:''
+    },
+    skills:{
+        type:[String],
+        default:[]
+    },
+    education:[{
+        degree:{ type:String},
+        institution:{ type:String},
+        yearOfGraduation:{ type:Number}
+    }],
+    experience:[{
+        jobTitle:{ type:String},
+        company:{ type:String},
+        startDate:{ type:Date},
+        endDate:{ type:Date},
+        description:{ type:String}
+    }],
+    socialLinks:{
+        linkedin:{ type:String},
+        facebook:{ type:String},
+        twitter:{ type:String},
+        github:{ type:String}
+    },
+    country:{
+        type:String,
+        default:''
+    },
+    preferredLanguage:{
+        type:String,
+        default:''
+    },
+    timezone:{
+        type:String,
+        default:''
+    },
+    location:{
+        type:location,
+    },
+    notificationSettings:{
+        
+        emailNotifications:{type:Boolean, default:true},
+        smsNotifications:{type:Boolean, default:true},
+        pushNotifications:{type:Boolean, default:true},
     }
-
+},
+{
+    timestamps:true
 });
+
+
+export default mongoose.model<IProfile>('Profile',ProfileSchema);
