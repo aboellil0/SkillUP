@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import { promises } from "dns";
 
@@ -16,7 +16,7 @@ export interface IUser extends Document{
     comparePassword(CredintialPassword:string):Promise<boolean>;
 }
 
-const userSchema = new mongoose.Schema<IUser>({
+const userSchema = new Schema<IUser>({
     email:{
         type:String,
         required:true,
