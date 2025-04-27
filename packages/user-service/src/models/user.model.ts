@@ -56,6 +56,9 @@ const userSchema = new Schema<IUser>({
         enum:['student','instructor','admin','superadmin'],
         default:'student'
     },
+    phoneNumber:{
+        type:String
+    },
     isEmailVerfied:{
         type:Boolean,
         default:false

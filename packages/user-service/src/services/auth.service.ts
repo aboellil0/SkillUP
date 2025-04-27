@@ -4,6 +4,7 @@ import RefreshToken,{ IRefreshToken } from "../models/refreshToken.model";
 import config from "../config";
 import { v4 as uuidv4 } from 'uuid';
 import TokenService,{ ITokenService } from "./token.service";
+import { error } from "console";
 
 interface AuthResult {
     userDTO: {
@@ -20,27 +21,41 @@ interface AuthResult {
   }
 
 export interface IAuthService {
-    registerUser(user: IUser): Promise<AuthResult>;
+    registerUser(email:string, password:string, firstName:string, lastName:string, role:string): Promise<AuthResult>;
     validateUser(email: string, password: string): Promise<AuthResult>;
     refreshAccessToken(userId: string, refreshToken: string): Promise<AuthResult>;
 }
 export class AuthService implements IAuthService{
-    async registerUser(user: IUser): Promise<AuthResult> {
-        const existingUser = await User.findOne({ email: user.email });
+    async registerUser(email:string, password:string, firstName:string, lastName:string, role:string): Promise<AuthResult> {
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             throw new Error("User already exists");
         }
-        const newUser = new User(user);
+
+        const newUser = new User({
+          email:email,
+          password:password,
+          firstName:firstName,
+          lastName:lastName,
+          role:role,
+          
+        });
+        await newUser.save().then((newUser)=>{
+          console.log("new user saved succesfully");
+        }).catch((error)=> {
+          console.log("new user not saved :",error);
+        });
+       
         const token = TokenService.generateAccessToken(newUser);
         const refreshToken = await TokenService.generateRefreshToken(newUser);
 
         return {
           userDTO: {
-            id: user._id.toString(),
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role
+            id: newUser._id.toString(),
+            email: newUser.email,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            role: newUser.role
           },
           tokens: {
             accessToken: token,
@@ -101,3 +116,5 @@ export class AuthService implements IAuthService{
         };
     }
 }
+
+export default new AuthService();
