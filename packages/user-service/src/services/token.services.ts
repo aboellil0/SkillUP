@@ -59,6 +59,7 @@ export class TokenService implements ITokenService{
             console.log("Decoded access token:", decoded);
             return Promise.resolve(decoded);
         }catch(error){
+            console.log("error with verfiying access token:",error);
             return Promise.resolve(null);
         }
     }
@@ -68,8 +69,9 @@ export class TokenService implements ITokenService{
             const refreshToken = await RefreshToken.findOne({
                 token: refreshtokenToken,
                 userId: userId,
-                isRevoked: false
-            })
+                isRevoked: false,
+                expiresAt: { $gt: new Date() } // Check if the token is not expired
+            });
             if(refreshToken == null){
                 console.log("Refresh token not found or revoked");
                 return null;
@@ -86,9 +88,8 @@ export class TokenService implements ITokenService{
         try{
             const refreshToken = await RefreshToken.findOne({
                 token: refreshtokenToken,
-                userId: userId,
-                isRevoked: false
-            }) 
+                userId: userId
+            }) ;
             if(refreshToken == null){
                 console.log("Refresh token not found or already revoked");
                 return false;

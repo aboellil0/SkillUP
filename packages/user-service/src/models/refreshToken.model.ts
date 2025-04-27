@@ -37,7 +37,7 @@ const RefreshToken = new Schema<IRefreshToken>({
     },
     isRevoked:{
         type:Boolean,
-        default:false
+        default:function(){return (this.expiresAt>= new Date())}
     },
     createdAt:{
         type:Date,
