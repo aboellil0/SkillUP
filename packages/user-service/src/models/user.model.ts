@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { promises } from "dns";
 
 export interface IUser extends Document{
+    _id:mongoose.Types.ObjectId;
     email:string;
     password?:string;
     firstName:string;
