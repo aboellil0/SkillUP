@@ -3,7 +3,7 @@ import User,{ IUser } from "../models/user.model";
 import RefreshToken,{ IRefreshToken } from "../models/refreshToken.model";
 import config from "../config";
 import { v4 as uuidv4 } from 'uuid';
-import TokenService,{ ITokenService } from "./token.services";
+import TokenService,{ ITokenService } from "./token.service";
 
 interface AuthResult {
     userDTO: {
