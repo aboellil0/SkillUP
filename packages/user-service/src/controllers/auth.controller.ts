@@ -22,13 +22,24 @@ export class AuthController{
         }
     }
 
+    async loginUser(req:Request,res:Response):Promise<void>{
+        try{
+            const {email,password} = req.body;
+            const authResponse = await authService.validateUser(email,password);
+            this.setRefreshTokenCookie(res, authResponse.tokens.refreshToken);
+            res.status(200).json(authResponse);
+        }catch(error){
+            console.log(error);
+            res.status(400).json(error);
+        }
+    }
+
     private setRefreshTokenCookie(res: Response, token: string): void {
-        // Set HTTP-only cookie
         res.cookie('refreshToken', token, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           sameSite: 'strict',
-          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+          maxAge: 30 * 24 * 60 * 60 * 1000 // 7 days
         });
       }
 }   
