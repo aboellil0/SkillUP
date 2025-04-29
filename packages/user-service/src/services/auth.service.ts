@@ -115,6 +115,17 @@ export class AuthService implements IAuthService{
             }
         };
     }
+    async LogOutUser(userId:string,refreshToken:string):Promise<void>{
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const isValid = await TokenService.verifyRefreshToken(userId,refreshToken);
+        if (!isValid) {
+            throw new Error("Invalid refresh token");
+        }
+        await TokenService.removeRefreshToken(userId,refreshToken);
+    }
 }
 
 export default new AuthService();

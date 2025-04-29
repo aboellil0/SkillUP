@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import authService, { AuthService } from "../services/auth.service";
-import { TokenService } from "../services/token.service";
+import tokenService, { TokenService } from "../services/token.service";
 import { error } from "console";
 import User,{IUser} from "../models/user.model"
 
@@ -28,6 +28,27 @@ export class AuthController{
             const authResponse = await authService.validateUser(email,password);
             this.setRefreshTokenCookie(res, authResponse.tokens.refreshToken);
             res.status(200).json(authResponse);
+        }catch(error){
+            console.log(error);
+            res.status(400).json(error);
+        }
+    }
+
+    async LogOutUser(req:Request,res:Response):Promise<void>{
+        try{
+            const UserId = (req as any).user.id
+            const refershTokenFromCokkie = req.cookies.refreshToken;
+            const accessTokenFromHeader = req.headers.authorization?.split(" ")[1];
+            const isAccessTokenValid = await tokenService.verifyAccessToken(accessTokenFromHeader as string);
+            if(!isAccessTokenValid){
+                res.status(401).json({message:"Invalid access token"});
+            }
+            if(refershTokenFromCokkie != null){
+                await authService.LogOutUser(UserId,refershTokenFromCokkie);
+                res.clearCookie('refreshToken');
+            }
+
+            res.status(200).json({message:"User logged out successfully"});
         }catch(error){
             console.log(error);
             res.status(400).json(error);
