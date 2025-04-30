@@ -9,14 +9,14 @@ import { error } from "console";
 
 export class UserService{
     async getUserById(id:string) :Promise<IUser|null>{
-        return User.findById(id);
+        return await User.findById(id);
     }
     async deletUser(id:string):Promise<Boolean>{
-        const resuult =  User.findByIdAndDelete(id); 
+        const resuult = await User.findByIdAndDelete(id); 
         return !!resuult;
     }
     async updateUSer(id:string,userDTO:Partial<IUser>):Promise<IUser|null>{
-        return User.findByIdAndUpdate(id,userDTO,{new:true});
+        return await User.findByIdAndUpdate(id,userDTO,{new:true});
     }
 }
 
