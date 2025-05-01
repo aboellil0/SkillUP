@@ -16,4 +16,24 @@ export class UserController{
             res.status(400).json({success:false,error });
         }
     }
+
+    async getUserById(req:Request,res:Response):Promise<void>{
+        try{
+            const userId = req.params.id
+            const user =  await userService.getUserById(userId)
+            res.status(200).json({success:true,user});
+        }catch(error){
+            console.log("getUserById has error : " ,error);
+            res.status(400).json({success:false,error });
+        }
+    }
+    async getAllUsers(req:Request,res:Response):Promise<void>{
+        try{
+            const users =  await userService.getUserById(req.params.id)
+            res.status(200).json({success:true,users});
+        }catch(error){
+            console.log("getAllUsers has error : " ,error);
+            res.status(400).json({success:false,error });
+        }
+    }
 }
