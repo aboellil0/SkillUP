@@ -3,6 +3,7 @@ import authService, { AuthService } from "../services/auth.service";
 import tokenService, { TokenService } from "../services/token.service";
 import { error } from "console";
 import User,{IUser} from "../models/user.model"
+import userService from "../services/user.service";
 
 
 
@@ -52,6 +53,24 @@ export class AuthController{
             }
 
             res.status(200).json({message:"User logged out successfully"});
+        }catch(error){
+            console.log(error);
+            res.status(400).json(error);
+        }
+    }
+
+    async refreshToken(req:Request,res:Response):Promise<void>{
+        try{
+            const UserId = (req as any).user.id
+            const refershTokenFromCokkie = req.cookies.refreshToken;
+            if(!refershTokenFromCokkie){
+                res.status(401).json({message:"No refresh token in cookie"});
+            }
+            
+            const AuthrResponse = await authService.refreshToken(UserId,refershTokenFromCokkie);
+
+            this.setRefreshTokenCookie(res, AuthrResponse.tokens.refreshToken);
+            res.status(200).json(AuthrResponse);
         }catch(error){
             console.log(error);
             res.status(400).json(error);

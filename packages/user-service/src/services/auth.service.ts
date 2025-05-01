@@ -23,7 +23,7 @@ interface AuthResult {
 export interface IAuthService {
     registerUser(email:string, password:string, firstName:string, lastName:string, role:string): Promise<AuthResult>;
     validateUser(email: string, password: string): Promise<AuthResult>;
-    refreshAccessToken(userId: string, refreshToken: string): Promise<AuthResult>;
+    refreshToken(userId: string, refreshToken: string): Promise<AuthResult>;
 }
 export class AuthService implements IAuthService{
     async registerUser(email:string, password:string, firstName:string, lastName:string, role:string): Promise<AuthResult> {
@@ -89,7 +89,7 @@ export class AuthService implements IAuthService{
       };
     }
 
-    async refreshAccessToken(userId: string, refreshToken: string): Promise<AuthResult>{
+    async refreshToken(userId: string, refreshToken: string): Promise<AuthResult>{
         const user = await User.findById(userId);
         if (!user) {
             throw new Error("User not found");
@@ -114,6 +114,7 @@ export class AuthService implements IAuthService{
                 refreshToken: newRefreshToken
             }
         };
+        
     }
     async LogOutUser(userId:string,refreshToken:string):Promise<void>{
         const user = await User.findById(userId);
