@@ -39,6 +39,9 @@ export class AuthController{
             const UserId = (req as any).user.id
             const refershTokenFromCokkie = req.cookies.refreshToken;
             const accessTokenFromHeader = req.headers.authorization?.split(" ")[1];
+            if(!refershTokenFromCokkie){
+                res.status(401).json({message:"No refresh token in cookie"});
+            }
             const isAccessTokenValid = await tokenService.verifyAccessToken(accessTokenFromHeader as string);
             if(!isAccessTokenValid){
                 res.status(401).json({message:"Invalid access token"});

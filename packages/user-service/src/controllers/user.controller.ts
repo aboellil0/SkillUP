@@ -7,32 +7,100 @@ import userService ,{ UserService } from "../services/user.service";
 
 
 export class UserController{
+
+
     async getCurrentUser(req:Request,res:Response):Promise<void>{
         try{
-            const userId = (req as any) 
-            const user =  await userService.getUserById(userId)
-        }catch(error){
-            console.log("getCurrentUser has error : " ,error);
-            res.status(400).json({success:false,error });
-        }
-    }
+            // verfication of token
+            const refershTokenFromCokkie = req.cookies.refreshToken;
+            const accessTokenFromHeader = req.headers.authorization?.split(" ")[1];
+            if(!refershTokenFromCokkie){
+                res.status(401).json({message:"No refresh token in cookie"});
+            }
+            const isAccessTokenValid = await tokenService.verifyAccessToken(accessTokenFromHeader as string);
+            if(!isAccessTokenValid){
+                res.status(401).json({message:"Invalid access token"});
+            }
 
-    async getUserById(req:Request,res:Response):Promise<void>{
-        try{
             const userId = req.params.id
             const user =  await userService.getUserById(userId)
-            res.status(200).json({success:true,user});
+            if(!user){
+                res.status(404).json({success:false,message:"User not found"});
+            }
+            res.status(200).json({success:true,data:{
+                user:{
+                    id:user?._id,
+                    name:user?.firstName + " " + user?.lastName,
+                    email:user?.email,
+                    phone:user?.phoneNumber,
+                    role:user?.role,
+                    createdAt:user?.createdAt,
+                    updatedAt:user?.updatedAt
+                }
+            }});
         }catch(error){
             console.log("getUserById has error : " ,error);
             res.status(400).json({success:false,error });
         }
     }
-    async getAllUsers(req:Request,res:Response):Promise<void>{
+
+    async updateUser(req:Request,res:Response):Promise<void>{
         try{
-            const users =  await userService.getUserById(req.params.id)
-            res.status(200).json({success:true,users});
+            // verfication of token
+            const refershTokenFromCokkie = req.cookies.refreshToken;
+            const accessTokenFromHeader = req.headers.authorization?.split(" ")[1];
+            if(!refershTokenFromCokkie){
+                res.status(401).json({message:"No refresh token in cookie"});
+            }
+            const isAccessTokenValid = await tokenService.verifyAccessToken(accessTokenFromHeader as string);
+            if(!isAccessTokenValid){
+                res.status(401).json({message:"Invalid access token"});
+            }
+
+            const userId = req.params.id
+            const {firstName,lastName,phoneNumber} = req.body
+            const user =  await userService.updateUSer(userId,{firstName,lastName,phoneNumber})
+            if(!user){
+                res.status(404).json({success:false,message:"User not found"});
+            }
+            res.status(200).json({success:true,data:{
+                user:{
+                    id:user?._id,
+                    name:user?.firstName + " " + user?.lastName,
+                    email:user?.email,
+                    phone:user?.phoneNumber,
+                    role:user?.role,
+                    createdAt:user?.createdAt,
+                    updatedAt:user?.updatedAt
+                }
+            }});
         }catch(error){
-            console.log("getAllUsers has error : " ,error);
+            console.log("updateUser has error : " ,error);
+            res.status(400).json({success:false,error });
+        }
+    }
+    async deleteUser(req:Request,res:Response):Promise<void>{
+        try{
+            // verfication of token
+            const refershTokenFromCokkie = req.cookies.refreshToken;
+            const accessTokenFromHeader = req.headers.authorization?.split(" ")[1];
+            if(!refershTokenFromCokkie){
+                res.status(401).json({message:"No refresh token in cookie"});
+            }
+            const isAccessTokenValid = await tokenService.verifyAccessToken(accessTokenFromHeader as string);
+            if(!isAccessTokenValid){
+                res.status(401).json({message:"Invalid access token"});
+            }
+            
+            
+            const userId = req.params.id
+            const user =  await userService.deletUser(userId)
+            if(!user){
+                res.status(404).json({success:false,message:"User not found"});
+            }
+            res.status(200).json({success:true,"message":"User deleted successfully"});
+        }catch(error){
+            console.log("deleteUser has error : " ,error);
             res.status(400).json({success:false,error });
         }
     }
