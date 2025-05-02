@@ -38,20 +38,16 @@ export class AuthController{
     async LogOutUser(req:Request,res:Response):Promise<void>{
         try{
             const UserId = (req as any).user.id
+
             const refershTokenFromCokkie = req.cookies.refreshToken;
-            const accessTokenFromHeader = req.headers.authorization?.split(" ")[1];
+            console.log("refershTokenFromCokkie",refershTokenFromCokkie);
             if(!refershTokenFromCokkie){
                 res.status(401).json({message:"No refresh token in cookie"});
             }
-            const isAccessTokenValid = await tokenService.verifyAccessToken(accessTokenFromHeader as string);
-            if(!isAccessTokenValid){
-                res.status(401).json({message:"Invalid access token"});
-            }
-            if(refershTokenFromCokkie != null){
-                await authService.LogOutUser(UserId,refershTokenFromCokkie);
-                res.clearCookie('refreshToken');
-            }
 
+            await authService.LogOutUser(UserId,refershTokenFromCokkie);
+            res.clearCookie('refreshToken');
+            
             res.status(200).json({message:"User logged out successfully"});
         }catch(error){
             console.log(error);

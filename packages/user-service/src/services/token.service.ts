@@ -16,7 +16,7 @@ export interface ITokenService {
     generateAccessToken(user: IUser): string;
     generateRefreshToken(user: IUser): Promise<string>;
     verifyAccessToken(token: string): Promise<Jwt | null>;
-    verifyRefreshToken(token: string,userId :string): Promise<IRefreshToken | null>;
+    verifyRefreshToken(userId :string,token: string): Promise<IRefreshToken | null>;
     removeRefreshToken(userId: string, refreshToken: string):Promise<boolean>;
 }
 
@@ -41,7 +41,8 @@ export class TokenService implements ITokenService{
         var token = new RefreshToken({
             userId: userId,
             token: refreshToken,
-            expiresAt: expiresAt
+            expiresAt: expiresAt,
+            isRevoked: false
         });
         await token.save().then((token) => {
             console.log("Refresh token saved successfully:", token);
@@ -64,7 +65,7 @@ export class TokenService implements ITokenService{
         }
     }
 
-    async verifyRefreshToken(refreshtokenToken: string,userId :string): Promise<IRefreshToken | null> {
+    async verifyRefreshToken(userId :string,refreshtokenToken: string): Promise<IRefreshToken | null> {
         try{
             const refreshToken = await RefreshToken.findOne({
                 token: refreshtokenToken,

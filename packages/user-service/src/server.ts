@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
 import config from './config';
+import cookieParser from 'cookie-parser';
 
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
@@ -19,9 +20,9 @@ export class server{
     private configrationMiddleware():void {
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended:true}));
-
         this.app.use(cors());
         this.app.use(helmet());
+        this.app.use(cookieParser());
 
         this.app.use((req,res,next)=>{
             console.log(`${new Date().toISOString()}-${req.method} ${req.path}`);
