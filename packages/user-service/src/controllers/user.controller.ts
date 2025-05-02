@@ -4,6 +4,7 @@ import tokenService, { TokenService } from "../services/token.service";
 import { error } from "console";
 import User,{IUser} from "../models/user.model"
 import userService ,{ UserService } from "../services/user.service";
+import authController, { AuthController } from "./auth.controller";
 
 
 export class UserController{
@@ -105,3 +106,5 @@ export class UserController{
         }
     }
 }
+
+export default new UserController();
