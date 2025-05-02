@@ -46,6 +46,7 @@ export class server{
 
     public async connectToDatabase(): Promise<void> {
         try {
+            console.log(config.mongoUri);
           await mongoose.connect(config.mongoUri);
           console.log('Connected to MongoDB');
         } catch (error) {

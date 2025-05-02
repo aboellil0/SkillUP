@@ -3,8 +3,8 @@ import mongoose, { Schema } from "mongoose";
 export interface IRefreshToken extends Document{
     userId: mongoose.Types.ObjectId;
     token: string;
-    createdByIP: string;
-    revokedByIP:string;
+    createdByIP?: string;
+    revokedByIP?:string;
     replacedtoken?:mongoose.Types.ObjectId;
     isRevoked:boolean;
     createdAt:Date;
@@ -25,11 +25,9 @@ const RefreshToken = new Schema<IRefreshToken>({
     },
     createdByIP:{
         type:String,
-        required:true
     },
     revokedByIP:{
         type:String,
-        required:true
     },
     replacedtoken:{
         type:mongoose.Schema.Types.ObjectId,
