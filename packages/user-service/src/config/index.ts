@@ -3,7 +3,7 @@ dotenv.config();
 
 export default {
   port: process.env.PORT,
-  mongoUri: process.env.MONGO_URI,
+  mongoUri: process.env.MONGO_UR as string,
   jwt: {
     accessTokenSecret: process.env.JWT_ACCESS_TOKEN_SECRET as string,
     refreshTokenSecret: process.env.JWT_REFRESH_TOKEN_SECRET as string,

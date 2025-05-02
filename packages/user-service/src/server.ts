@@ -43,6 +43,18 @@ export class server{
         });
     }
 
+
+    public async connectToDatabase(): Promise<void> {
+        try {
+          await mongoose.connect(config.mongoUri);
+          console.log('Connected to MongoDB');
+        } catch (error) {
+          console.error('MongoDB connection error:', error);
+          process.exit(1);
+        }
+      }
+    
+
     public start():void{
         const port =  config.port;
 
