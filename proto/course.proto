@@ -1,0 +1,244 @@
+syntax = "proto3";
+
+package course;
+
+service CourseService {
+  // Course operations
+  rpc GetCourse(GetCourseRequest) returns (CourseResponse);
+  rpc ListCourses(ListCoursesRequest) returns (ListCoursesResponse);
+  rpc CreateCourse(CreateCourseRequest) returns (CourseResponse);
+  rpc UpdateCourse(UpdateCourseRequest) returns (CourseResponse);
+  rpc DeleteCourse(DeleteCourseRequest) returns (DeleteCourseResponse);
+  
+  // Lesson operations
+  rpc GetLesson(GetLessonRequest) returns (LessonResponse);
+  rpc ListLessons(ListLessonsRequest) returns (ListLessonsResponse);
+  
+  // Enrollment operations
+  rpc GetUserEnrollments(GetUserEnrollmentsRequest) returns (EnrollmentsResponse);
+  rpc EnrollUser(EnrollUserRequest) returns (EnrollmentResponse);
+  rpc UpdateUserProgress(UpdateProgressRequest) returns (ProgressResponse);
+  rpc CheckUserEnrollment(CheckEnrollmentRequest) returns (CheckEnrollmentResponse);
+}
+
+// Course messages
+message Course {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string instructor_id = 4;
+  double price = 5;
+  string image_url = 6;
+  string level = 7;
+  repeated string category = 8;
+  repeated string tags = 9;
+  string status = 10;
+  repeated string requirements = 11;
+  repeated string objectives = 12;
+  int32 duration = 13;
+  int32 enrollment_count = 14;
+  double rating_average = 15;
+  int32 rating_count = 16;
+  string created_at = 17;
+  string updated_at = 18;
+}
+
+message GetCourseRequest {
+  string id = 1;
+}
+
+message CourseResponse {
+  Course course = 1;
+}
+
+message ListCoursesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string category = 3;
+  string level = 4;
+  string status = 5;
+  string search = 6;
+}
+
+message ListCoursesResponse {
+  repeated Course courses = 1;
+  Pagination pagination = 2;
+}
+
+message CreateCourseRequest {
+  string title = 1;
+  string description = 2;
+  string instructor_id = 3;
+  double price = 4;
+  string image_url = 5;
+  string level = 6;
+  repeated string category = 7;
+  repeated string tags = 8;
+  repeated string requirements = 9;
+  repeated string objectives = 10;
+  int32 duration = 11;
+}
+
+message UpdateCourseRequest {
+  string id = 1;
+  string instructor_id = 2;
+  string title = 3;
+  string description = 4;
+  double price = 5;
+  string image_url = 6;
+  string level = 7;
+  repeated string category = 8;
+  repeated string tags = 9;
+  string status = 10;
+  repeated string requirements = 11;
+  repeated string objectives = 12;
+  int32 duration = 13;
+}
+
+message DeleteCourseRequest {
+  string id = 1;
+  string instructor_id = 2;
+}
+
+message DeleteCourseResponse {
+  bool success = 1;
+}
+
+// Lesson messages
+message Lesson {
+  string id = 1;
+  string course_id = 2;
+  string title = 3;
+  string description = 4;
+  string content = 5;
+  string video_url = 6;
+  int32 order = 7;
+  int32 duration = 8;
+  repeated Resource resources = 9;
+  Quiz quiz = 10;
+  string created_at = 11;
+  string updated_at = 12;
+}
+
+message Resource {
+  string title = 1;
+  string type = 2;
+  string url = 3;
+}
+
+message Quiz {
+  repeated QuizQuestion questions = 1;
+}
+
+message QuizQuestion {
+  string text = 1;
+  repeated string options = 2;
+  int32 correct_option_index = 3;
+}
+
+message GetLessonRequest {
+  string id = 1;
+}
+
+message LessonResponse {
+  Lesson lesson = 1;
+}
+
+message ListLessonsRequest {
+  string course_id = 1;
+}
+
+message ListLessonsResponse {
+  repeated Lesson lessons = 1;
+}
+
+// Enrollment messages
+message Enrollment {
+  string id = 1;
+  string user_id = 2;
+  string course_id = 3;
+  string status = 4;
+  Progress progress = 5;
+  string enrollment_date = 6;
+  string completion_date = 7;
+  string certificate_id = 8;
+  Rating rating = 9;
+  string created_at = 10;
+  string updated_at = 11;
+}
+
+message Progress {
+  repeated string completed_lessons = 1;
+  string last_accessed = 2;
+  repeated QuizScore quiz_scores = 3;
+}
+
+message QuizScore {
+  string lesson_id = 1;
+  double score = 2;
+  int32 attempts = 3;
+}
+
+message Rating {
+  double value = 1;
+  string review = 2;
+  string created_at = 3;
+}
+
+message GetUserEnrollmentsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  string status = 4;
+}
+
+message EnrollmentsResponse {
+  repeated Enrollment enrollments = 1;
+  Pagination pagination = 2;
+}
+
+message EnrollUserRequest {
+  string user_id = 1;
+  string course_id = 2;
+}
+
+message EnrollmentResponse {
+  Enrollment enrollment = 1;
+}
+
+message UpdateProgressRequest {
+  string user_id = 1;
+  string course_id = 2;
+  string completed_lesson = 3;
+  string last_accessed = 4;
+  QuizScoreUpdate quiz_score = 5;
+}
+
+message QuizScoreUpdate {
+  string lesson_id = 1;
+  double score = 2;
+}
+
+message ProgressResponse {
+  Progress progress = 1;
+  bool course_completed = 2;
+}
+
+message CheckEnrollmentRequest {
+  string user_id = 1;
+  string course_id = 2;
+}
+
+message CheckEnrollmentResponse {
+  bool is_enrolled = 1;
+  string enrollment_id = 2;
+  string status = 3;
+}
+
+// Common messages
+message Pagination {
+  int32 total = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 pages = 4;
+}
