@@ -54,7 +54,7 @@ export class TokenService implements ITokenService{
         
     }
 
-    verifyAccessToken(token: string): Promise<Jwt | null> {
+     verifyAccessToken(token: string): Promise<Jwt | null> {
        try {
             const decoded = jwt.verify(token, config.jwt.accessTokenSecret) as Jwt;
             console.log("Decoded access token:", decoded);
